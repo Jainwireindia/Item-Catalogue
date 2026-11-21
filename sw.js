@@ -1,5 +1,5 @@
-/* Item Catalogue service worker v1.1.0 – app shell works offline; Drive photos & API always go to the network */
-const CACHE='item-catalogue-v1.1.0';
+/* Item Catalogue service worker v1.1.1 – app shell works offline; Drive photos & API always go to the network */
+const CACHE='item-catalogue-v1.1.1';
 const SHELL=['./','index.html','manifest.json','icon-192.png','icon-512.png','icon-180.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==CACHE&&x.startsWith('item-catalogue-')).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
