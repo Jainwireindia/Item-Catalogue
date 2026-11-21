@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Item Catalogue</title>
+<meta name="theme-color" content="#d32027">
+<meta name="application-name" content="Item Catalogue">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Item Catalogue">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--brand:#d32027;--cream:#f7e2b5;--bg:#fbf4e4;--card:#fff;--ink:#241713;--mut:#7a6a5f;--line:#ead9b8;--bar:#7a1218;--warn:#92400e;--yellow:#e3a613;--brandtxt:#d32027;--grid:rgba(211,32,39,.07)}
+[data-theme=dark]{--bg:#150b0c;--card:#211314;--ink:#f6ebd6;--mut:#b9a392;--line:#3a2426;--bar:#0d0506;--brandtxt:#ff6b6f;--grid:rgba(247,226,181,.05)}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-feature-settings:"calt" 0;font-size:14.5px;font-weight:500;color:var(--ink);background:var(--bg);
+ background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:30px 30px;min-height:100vh;padding-bottom:90px}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.brandbar{background:var(--cream);text-align:center;padding:14px 12px 11px;border-bottom:4px solid var(--brand);position:relative}
+[data-theme=dark] .brandbar{background:#2a1315}
+.brandbar h1{margin:0;font-weight:800;font-size:clamp(26px,7.5vw,40px);line-height:1;letter-spacing:.03em;color:var(--brandtxt)}
+.brandbar .corp{font-weight:800;font-size:clamp(11px,3.3vw,16px);letter-spacing:.2em;color:var(--brandtxt);margin-top:5px;text-indent:.2em}
+.brandbar .loc{font-weight:700;font-size:clamp(9px,2.6vw,12px);letter-spacing:.12em;color:#7a2a22;margin-top:7px;white-space:nowrap}
+[data-theme=dark] .brandbar .loc{color:#d9bf91}
+.ribbon{background:var(--brand);color:#fff;display:flex;align-items:center;justify-content:center;gap:10px;padding:6px 10px;font-weight:800;letter-spacing:.16em;font-size:12px;text-transform:uppercase}
+.stick{position:sticky;top:0;z-index:20;background:var(--bg);padding:10px 14px 8px;border-bottom:1px solid var(--line)}
+.stick .in{max-width:1200px;margin:0 auto}
+.srow{display:flex;gap:8px}
+.search{flex:1;min-width:0;padding:11px 14px;border-radius:10px;border:1.5px solid var(--line);font-size:15px;background:var(--card);color:var(--ink)}
+.search:focus{outline:2px solid var(--brand);border-color:var(--brand)}
+.sbtn{flex:none;border:1.5px solid var(--brand);background:transparent;color:var(--brandtxt);border-radius:10px;padding:0 14px;font-weight:700}
+.sbtn.on{background:var(--brand);color:#fff}
+.chips{display:flex;gap:7px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
+.chip{flex:none;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 13px;font-weight:700;font-size:13px}
+.chip.on{background:var(--brand);border-color:var(--brand);color:#fff}
+.chip small{opacity:.7;margin-left:4px}
+.foot{max-width:1200px;margin:10px auto 0;padding:14px;display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center;font-size:12.5px;color:var(--mut)}
+.foot button{background:none;border:0;color:var(--brandtxt);font-weight:700;padding:4px;text-decoration:underline}
+main{max-width:1200px;margin:0 auto;padding:14px}
+.sub{font-weight:800;font-size:13px;color:var(--brandtxt);margin:18px 2px 8px;text-transform:uppercase;letter-spacing:.04em}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:11px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}}
+.card{background:var(--card);border:2px solid transparent;border-radius:13px;overflow:hidden;position:relative;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.card.sel{border-color:var(--brand)}
+.thumb{aspect-ratio:1/1;background:var(--line);display:block;width:100%;border:0;padding:0;position:relative;overflow:hidden}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.play{position:absolute;right:8px;bottom:8px;background:rgba(0,0,0,.6);color:#fff;border-radius:6px;font-size:11px;padding:2px 6px;font-weight:700}
+.tick{position:absolute;left:8px;top:8px;width:28px;height:28px;border-radius:8px;border:2px solid #fff;background:rgba(0,0,0,.35);color:#fff;display:grid;place-items:center;font-weight:800;font-size:16px;padding:0}
+.card.sel .tick{background:var(--brand)}
+.info{padding:9px 10px 11px}
+.nm{font-weight:700;font-size:13.5px;line-height:1.25;word-break:break-word}
+.dt{margin-top:4px;font-size:12px;color:var(--mut);line-height:1.35}
+.nodet{color:var(--warn)}
+.empty{text-align:center;color:var(--mut);padding:50px 10px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--bar);color:#fff;padding:10px 14px;display:none;z-index:25}
+.bar.show{display:block}
+.bar .in{max-width:1200px;margin:0 auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{border:0;border-radius:10px;padding:10px 15px;font-weight:700;background:var(--brand);color:#fff}
+.bar .btn{background:var(--cream);color:#7a1218}.bar .btn.ghost{background:rgba(255,255,255,.18);color:#fff}
+.btn.ghost{background:rgba(255,255,255,.18)}
+.btn.alt{background:var(--card);color:var(--ink);border:1px solid var(--line)}
+.btn.warn{background:var(--warn)}
+.btn[disabled]{opacity:.55}
+.tg{display:flex;align-items:center;gap:6px;font-weight:600;font-size:13px}
+.tg input{width:18px;height:18px;accent-color:var(--brand)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:40;display:none;overflow:auto;padding:12px}
+.modal.show{display:block}
+.sheet{background:var(--card);max-width:560px;margin:0 auto;border-radius:16px;overflow:hidden}
+.sheet .big{background:#000;display:block;width:100%;max-height:60vh;object-fit:contain}
+.sheet .body{padding:14px 16px 18px}
+.sheet h2{margin:0 0 4px;font-size:20px;font-weight:800}
+.cat{color:var(--mut);font-size:12.5px;margin-bottom:10px}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:6px 10px;margin:10px 0;font-size:14px}
+.kv b{color:var(--mut);font-weight:600}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+label.f{display:block;font-size:12px;font-weight:700;color:var(--mut);margin:10px 0 4px}
+.inp{width:100%;padding:9px 11px;border-radius:9px;border:1px solid var(--line);background:var(--card)}
+textarea.inp{min-height:62px;resize:vertical}
+.msg{margin-top:10px;font-size:13px;font-weight:700;color:#15803d}
+.msg.err{color:var(--warn)}
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);background:#0b191d;color:#fff;padding:10px 16px;border-radius:10px;z-index:60;font-weight:600;display:none;max-width:90vw;text-align:center}
+.toast.show{display:block}
+
+.adminrow{display:flex;gap:8px;align-items:center;margin:10px 0 0;flex-wrap:wrap}
+.pill{display:inline-block;background:var(--yellow);color:#0b191d;border-radius:6px;font-size:11px;font-weight:800;padding:2px 7px}
+</style>
+</head>
+<body>
+<header>
+ <div class="brandbar">
+  <h1>JAIN WIRE</h1>
+  <div class="corp">NETTING CORPORATION</div>
+  <div class="loc">ERNAKULAM | ANGAMALY | CALICUT | KANNUR</div>
+ </div>
+ <div class="ribbon">Item Catalogue <span class="pill" id="adminPill" hidden>ADMIN</span></div>
+</header>
+<div class="stick"><div class="in">
+ <div class="srow"><input class="search" id="q" type="search" placeholder="Search items…" autocomplete="off"><button class="sbtn" id="selMode">Select</button></div>
+ <div class="chips" id="chips"></div>
+</div></div>
+<main id="main"><div class="empty">Loading…</div></main>
+
+<div class="foot"><button id="installBtn">Install app</button><button id="theme">Theme</button><button id="refBtn" style="display:none">Refresh from Drive</button><button id="adminBtn">Admin login</button><span id="ver"></span></div>
+
+<div class="bar" id="bar"><div class="in">
+ <b id="selCount">0 selected</b>
+ <label class="tg"><input type="checkbox" id="withText" checked> Add details text</label>
+ <div class="grow"></div>
+ <button class="btn ghost" id="clearSel">Clear</button>
+ <button class="btn" id="shareSel">Share on WhatsApp</button>
+</div></div>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+<div class="ver" id="ver"></div>
+
+<script>
+const VERSION='1.1.0';
+/* ====== FIXED LINE: paste the Apps Script web app URL between the quotes. Empty = demo mode ====== */
+const API_URL='';
+/* ================================================================================================= */
+const FIELDS=[['title','Display name'],['sizes','Sizes available'],['weight','Weight (kg)'],['length','Length (ft / m)'],['notes','Notes']];
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let S={items:[],details:{},cat:'All',q:'',selMode:false,sel:new Set(),admin:false,pw:'',open:null};
+const DEMO=!API_URL;
+
+/* ---------- date helper (DD-MM-YYYY) ---------- */
+function fmtDate(ms){if(!ms)return'';const d=new Date(ms);const p=n=>String(n).padStart(2,'0');return p(d.getDate())+'-'+p(d.getMonth()+1)+'-'+d.getFullYear()}
+
+/* ---------- api ---------- */
+async function api(body){
+  if(DEMO)return demoApi(body);
+  const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  return r.json();
+}
+function demoApi(b){
+  if(!window.__demo){
+    const cats={'PERF. SHEET':['3MM RH','6MM RH','SS Brass'],'CHAINLINK':['Gi Ch 65x65x4mm','Compact Chainlink'],'WIREMESH & MOSQ NET':['Wire Mesh 10x20','SS Mosq Net Welcome','Mosq Net Brown','6x20x3ft'],'ALUMINIUM COIL':['Aluminium Coil 0.5mm']};
+    let items=[],n=0;for(const c in cats)cats[c].forEach(nm=>items.push({id:'demo'+(n++),name:nm,cat:c,sub:'',type:nm==='Compact Chainlink'?'video':'image',mtime:Date.now()-n*864e5}));
+    window.__demo={items,details:{demo0:{sizes:'3mm, 4mm',weight:'12 kg per sheet',length:'8 ft'},demo2:{title:'Chainlink 65x65 4mm',sizes:'3ft, 4ft, 5ft, 6ft',weight:'~25 kg / roll',length:'30 ft'}}};
+  }
+  const D=window.__demo;
+  if(b.action==='list')return Promise.resolve({ok:true,version:VERSION,items:D.items,details:D.details});
+  if(b.action==='auth')return Promise.resolve({ok:b.pw==='1234'});
+  if(b.action==='save'){if(b.pw!=='1234')return Promise.resolve({ok:false,error:'Wrong password'});
+    for(const id in b.changes){const v=b.changes[id];const any=Object.values(v).some(x=>String(x).trim());if(any)D.details[id]=v;else delete D.details[id]}
+    return Promise.resolve({ok:true,details:D.details})}
+  if(b.action==='file')return Promise.resolve({ok:true,mime:'image/svg+xml',name:'x',b64:btoa(demoSvg('demo'))});
+  return Promise.resolve({ok:false,error:'?'});
+}
+function demoSvg(t){return '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400"><rect width="400" height="400" fill="#d32027"/><path d="M0 100h400M0 200h400M0 300h400M100 0v400M200 0v400M300 0v400" stroke="#f7e2b5" stroke-width="4"/><text x="200" y="210" font-size="26" text-anchor="middle" fill="#fff">'+esc(t)+'</text></svg>'}
+const thumb=(it,w)=>DEMO?'data:image/svg+xml;utf8,'+encodeURIComponent(demoSvg(it.name)):'https://drive.google.com/thumbnail?id='+it.id+'&sz=w'+w;
+const viewUrl=it=>DEMO?'https://drive.google.com/file/d/'+it.id+'/view':'https://drive.google.com/file/d/'+it.id+'/view';
+
+/* ---------- data helpers ---------- */
+const det=id=>S.details[id]||{};
+const nameOf=it=>det(it.id).title||it.name;
+function detailLines(it){const d=det(it.id),o=[];if(d.sizes)o.push(['Sizes',d.sizes]);if(d.weight)o.push(['Weight',d.weight]);if(d.length)o.push(['Length',d.length]);if(d.notes)o.push(['Notes',d.notes]);return o}
+function shareText(it){const l=detailLines(it).map(x=>x[0]+': '+x[1]);return [nameOf(it)].concat(l).join('\n')}
+function toast(m,ms){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),ms||2600)}
+
+/* ---------- render ---------- */
+function visible(){
+  const q=S.q.trim().toLowerCase();
+  return S.items.filter(it=>(S.cat==='All'||it.cat===S.cat)&&(!q||(nameOf(it)+' '+it.name+' '+it.cat+' '+it.sub+' '+Object.values(det(it.id)).join(' ')).toLowerCase().includes(q)));
+}
+function renderChips(){
+  const cats=[...new Set(S.items.map(i=>i.cat))].sort();
+  const cnt=c=>S.items.filter(i=>c==='All'||i.cat===c).length;
+  $('#chips').innerHTML=['All'].concat(cats).map(c=>'<button class="chip'+(S.cat===c?' on':'')+'" data-c="'+esc(c)+'">'+esc(c)+'<small>'+cnt(c)+'</small></button>').join('');
+}
+function render(){
+  renderChips();
+  const v=visible(),m=$('#main');
+  if(!v.length){m.innerHTML='<div class="empty">No items found.</div>';updateBar();return}
+  const groups={};v.forEach(it=>{const k=(S.cat==='All'?it.cat+(it.sub?' › '+it.sub:''):it.sub)||'';(groups[k]=groups[k]||[]).push(it)});
+  let h='';
+  Object.keys(groups).sort().forEach(k=>{
+    if(k)h+='<div class="sub">'+esc(k)+'</div>';
+    h+='<div class="grid">'+groups[k].map(card).join('')+'</div>';
+  });
+  m.innerHTML=h;updateBar();
+}
+function card(it){
+  const l=detailLines(it).filter(x=>x[0]!=='Notes').map(x=>esc(x[1])).join(' · ');
+  const sel=S.sel.has(it.id);
+  return '<div class="card'+(sel?' sel':'')+'" data-id="'+it.id+'"><button class="thumb" data-open="'+it.id+'"><img loading="lazy" alt="" src="'+thumb(it,400)+'">'+(it.type==='video'?'<span class="play">▶ Video</span>':'')+'</button>'
+   +(S.selMode?'<button class="tick" data-tick="'+it.id+'" aria-label="Select">'+(sel?'✓':'')+'</button>':'')
+   +'<div class="info"><div class="nm">'+esc(nameOf(it))+'</div>'+(l?'<div class="dt">'+l+'</div>':(S.admin?'<div class="dt nodet">No details yet</div>':''))+'</div></div>';
+}
+function updateBar(){const n=S.sel.size;$('#bar').classList.toggle('show',n>0);$('#selCount').textContent=n+' selected';$('#selMode').classList.toggle('on',S.selMode);$('#selMode').textContent=S.selMode?'Done':'Select';$('#adminPill').hidden=!S.admin;$('#adminBtn').textContent=S.admin?'Admin logout':'Admin login';$('#refBtn').style.display=S.admin?'':'none'}
+
+/* ---------- detail modal ---------- */
+function openItem(id){
+  const it=S.items.find(i=>i.id===id);if(!it)return;S.open=id;
+  const d=det(id),lines=detailLines(it);
+  let h=(it.type==='video'?'<div style="padding:30px;text-align:center;background:#000;color:#fff">Video — use Open to play</div>':'<img class="big" alt="" src="'+thumb(it,1200)+'">')
+  +'<div class="body"><h2>'+esc(nameOf(it))+'</h2><div class="cat">'+esc(it.cat+(it.sub?' › '+it.sub:''))+'</div>';
+  if(lines.length)h+='<div class="kv">'+lines.map(x=>'<b>'+esc(x[0])+'</b><span>'+esc(x[1])+'</span>').join('')+'</div>';
+  else h+='<div class="cat">No size / weight details added yet.</div>';
+  h+='<div class="row"><button class="btn" data-act="share1">Share on WhatsApp</button><button class="btn alt" data-act="copylink">Copy link</button><button class="btn alt" data-act="copytext">Copy details</button><a class="btn alt" style="text-decoration:none;display:inline-block" target="_blank" rel="noopener" href="'+viewUrl(it)+'">Open</a></div>'
+  +'<div class="row"><label class="tg"><input type="checkbox" id="withText1" checked> Add details text</label></div>';
+  if(S.admin){
+    h+='<hr style="border:0;border-top:1px solid var(--line);margin:16px 0 4px"><span class="pill">ADMIN – EDIT DETAILS</span>'
+    +FIELDS.map(f=>'<label class="f">'+f[1]+'</label>'+(f[0]==='notes'?'<textarea class="inp" data-f="'+f[0]+'">'+esc(d[f[0]]||'')+'</textarea>':'<input class="inp" data-f="'+f[0]+'" value="'+esc(d[f[0]]||'')+'">')).join('')
+    +'<div class="row"><button class="btn" data-act="save">Save</button><button class="btn alt" data-act="clear">Clear details</button></div><div class="msg" id="eMsg"></div>';
+  }
+  h+='<div class="row"><button class="btn ghost" style="background:var(--line);color:var(--ink)" data-act="close">Close</button></div></div>';
+  $('#sheet').innerHTML=h;$('#modal').classList.add('show');
+}
+function closeItem(){$('#modal').classList.remove('show');S.open=null}
+
+/* ---------- sharing ---------- */
+async function fetchBlob(it){
+  if(DEMO){const r=await api({action:'file',id:it.id});return new Blob([atob(r.b64)],{type:r.mime})}
+  const r=await api({action:'file',id:it.id});
+  if(!r.ok)throw new Error(r.error||'Could not load photo');
+  const bin=atob(r.b64),u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+  return new Blob([u],{type:r.mime});
+}
+function extFor(m){return m.indexOf('png')>-1?'png':m.indexOf('webp')>-1?'webp':m.indexOf('mp4')>-1?'mp4':m.indexOf('svg')>-1?'svg':'jpg'}
+async function doShare(items,withText){
+  const text=withText?items.map(shareText).join('\n\n'):'';
+  toast('Preparing '+items.length+' photo'+(items.length>1?'s':'')+'…',8000);
+  let files=[];
+  try{
+    for(const it of items){const b=await fetchBlob(it);files.push(new File([b],nameOf(it).replace(/[^\w\- ]+/g,'')+'.'+extFor(b.type),{type:b.type}))}
+  }catch(e){toast('Could not load photos: '+e.message,4000);files=[]}
+  const data=files.length?{files,text}:{text:text||items.map(i=>nameOf(i)+' '+viewUrl(i)).join('\n')};
+  if(navigator.share&&(!files.length||(navigator.canShare&&navigator.canShare({files})))){
+    try{await navigator.share(data);$('#toast').classList.remove('show');return}catch(e){if(e&&e.name==='AbortError'){$('#toast').classList.remove('show');return}}
+  }
+  // fallback (desktop / unsupported): copy text with links
+  const fb=items.map(it=>(withText?shareText(it)+'\n':nameOf(it)+'\n')+viewUrl(it)).join('\n\n');
+  try{await navigator.clipboard.writeText(fb);toast('Sharing not supported here — details and photo links copied. Paste in WhatsApp.',4500)}catch(e){toast('Sharing is not supported on this device.',4000)}
+}
+async function copy(t,msg){try{await navigator.clipboard.writeText(t);toast(msg)}catch(e){toast('Could not copy')}}
+
+/* ---------- admin ---------- */
+function adminPrompt(){
+  $('#sheet').innerHTML='<div class="body"><h2>Admin login</h2><label class="f">Password</label><input class="inp" id="pwIn" type="password" autocomplete="current-password"><div class="row"><button class="btn" data-act="login">Login</button><button class="btn alt" data-act="close">Cancel</button></div><div class="msg err" id="pwMsg"></div></div>';
+  $('#modal').classList.add('show');setTimeout(()=>{const e=$('#pwIn');e&&e.focus()},50);
+}
+async function login(){
+  const pw=$('#pwIn').value;$('#pwMsg').textContent='Checking…';
+  try{const r=await api({action:'auth',pw});if(r.ok){S.admin=true;S.pw=pw;closeItem();render();toast('Admin mode on — open an item to edit details')}else $('#pwMsg').textContent='Wrong password'}
+  catch(e){$('#pwMsg').textContent='Could not reach server'}
+}
+async function saveItem(clear){
+  const id=S.open,msg=$('#eMsg');const row={};
+  document.querySelectorAll('#sheet [data-f]').forEach(e=>row[e.dataset.f]=clear?'':e.value);
+  msg.className='msg';msg.textContent='Saving…';
+  try{const r=await api({action:'save',pw:S.pw,changes:{[id]:row}});
+    if(r.ok){S.details=r.details;store.set('jw_cache',JSON.stringify({items:S.items,details:S.details}));render();openItem(id);const m=$('#eMsg');m.textContent='Saved ✓';}
+    else{msg.className='msg err';msg.textContent=r.error||'Save failed'}}
+  catch(e){msg.className='msg err';msg.textContent='Could not reach server'}
+}
+
+/* ---------- load ---------- */
+async function load(refresh){
+  const c=store.get('jw_cache');
+  if(c&&!refresh){try{const j=JSON.parse(c);S.items=j.items;S.details=j.details;render()}catch(e){}}
+  try{
+    const r=await api({action:'list',refresh:!!refresh,pw:S.pw});
+    if(!r.ok)throw new Error(r.error);
+    S.items=r.items;S.details=r.details||{};store.set('jw_cache',JSON.stringify({items:S.items,details:S.details}));render();
+    if(refresh)toast('Refreshed from Drive');
+  }catch(e){if(!S.items.length)$('#main').innerHTML='<div class="empty">Could not load items. Check internet and try again.</div>'}
+}
+
+/* ---------- events ---------- */
+$('#chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(b){S.cat=b.dataset.c;render()}});
+$('#q').addEventListener('input',e=>{S.q=e.target.value;render()});
+$('#main').addEventListener('click',e=>{
+  const t=e.target.closest('[data-tick]');if(t){toggle(t.dataset.tick);return}
+  const o=e.target.closest('[data-open]');if(o){S.selMode?toggle(o.dataset.open):openItem(o.dataset.open)}
+});
+function toggle(id){S.sel.has(id)?S.sel.delete(id):S.sel.add(id);render()}
+$('#selMode').onclick=()=>{S.selMode=!S.selMode;if(!S.selMode)S.sel.clear();render()};
+$('#clearSel').onclick=()=>{S.sel.clear();render()};
+$('#shareSel').onclick=async()=>{const its=S.items.filter(i=>S.sel.has(i.id));if(its.length)await doShare(its,$('#withText').checked)};
+$('#refBtn').onclick=()=>load(true);
+$('#adminBtn').onclick=()=>{if(S.admin){S.admin=false;S.pw='';render();toast('Admin mode off')}else adminPrompt()};
+$('#modal').addEventListener('click',async e=>{
+  if(e.target.id==='modal'){closeItem();return}
+  const a=e.target.closest('[data-act]');if(!a)return;
+  const it=S.items.find(i=>i.id===S.open),act=a.dataset.act;
+  if(act==='close')closeItem();
+  else if(act==='login')login();
+  else if(act==='share1')await doShare([it],$('#withText1').checked);
+  else if(act==='copylink')copy(viewUrl(it),'Link copied');
+  else if(act==='copytext')copy(shareText(it),'Details copied');
+  else if(act==='save')saveItem(false);
+  else if(act==='clear')saveItem(true);
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&$('#pwIn')&&document.activeElement===$('#pwIn'))login();if(e.key==='Escape')closeItem()});
+
+/* theme: auto -> light -> dark */
+function applyTheme(m){const dark=m==='dark'||(m==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.dataset.theme=dark?'dark':'light';$('#theme').textContent='Theme: '+(m==='auto'?'Auto':m==='dark'?'Dark':'Light')}
+let tm=store.get('jw_theme')||'auto';applyTheme(tm);
+$('#theme').onclick=()=>{tm=tm==='auto'?'light':tm==='light'?'dark':'auto';store.set('jw_theme',tm);applyTheme(tm)};
+
+$('#ver').textContent='v'+VERSION+(DEMO?' · DEMO':'');
+/* ---- PWA ---- */
+if('serviceWorker' in navigator&&/^https?:/.test(location.protocol)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+let dip=null;const standalone=matchMedia('(display-mode:standalone)').matches||navigator.standalone;
+if(standalone)$('#installBtn').style.display='none';
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dip=e});
+addEventListener('appinstalled',()=>{$('#installBtn').style.display='none';toast('Installed')});
+$('#installBtn').onclick=async()=>{if(dip){dip.prompt();await dip.userChoice;dip=null}else toast('Open the browser menu and choose Install app / Add to Home screen (iPhone: Share → Add to Home Screen)',6000)};
+load(false);
+</script>
+</body>
+</html>
